@@ -1,0 +1,87 @@
+<%- include('./partials/head', { judul: 'Keranjang' }) %>
+
+<div class="wrap">
+  <%- include('./partials/alert', { error: error, notification: notification }) %>
+
+  <div class="judul-bagian">
+    <h2>Keranjang belanja</h2>
+    <a href="/products">Lanjut belanja</a>
+  </div>
+
+  <% if (melebihiBudget) { %>
+    <div class="pesan pesan-ingat">
+      Total belanja kamu melewati batas anggaran sebesar
+      <%= formatRupiah(Math.abs(sisaBudget)) %>. Kurangi jumlah barang atau naikkan batas anggaran.
+    </div>
+  <% } %>
+
+  <% if (daftarKeranjang.length === 0) { %>
+    <div class="kosong">
+      <h3>Keranjang kamu masih kosong</h3>
+      <p>Telusuri katalog dan masukkan barang yang kamu suka.</p>
+      <p style="margin-top: 18px"><a class="btn btn-utama" href="/products">Buka katalog</a></p>
+    </div>
+  <% } else { %>
+    <table>
+      <thead>
+        <tr>
+          <th>Produk</th>
+          <th>Kategori</th>
+          <th class="angka">Harga satuan</th>
+          <th>Jumlah</th>
+          <th class="angka">Subtotal</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% daftarKeranjang.forEach(baris => { %>
+          <tr>
+            <td><%= baris.Product.name %></td>
+            <td><%= baris.Product.Category.name %></td>
+            <td class="angka"><%= baris.Product.hargaRupiah %></td>
+            <td>
+              <form action="/carts/<%= baris.id %>/edit" method="POST" style="display:flex; gap:8px; align-items:center">
+                <input type="number" name="quantity" value="<%= baris.quantity %>" min="1" style="width:74px">
+                <button type="submit" class="btn btn-netral btn-kecil">Ubah</button>
+              </form>
+            </td>
+            <td class="angka"><%= baris.subtotalRupiah %></td>
+            <td class="angka">
+              <a class="btn btn-bahaya btn-kecil" href="/carts/<%= baris.id %>/delete">Hapus</a>
+            </td>
+          </tr>
+        <% }) %>
+        <tr class="baris-total">
+          <td colspan="4">Total belanja</td>
+          <td class="angka"><%= formatRupiah(totalBelanja) %></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  <% } %>
+
+  <div class="kotak-anggaran">
+    <h3>Batas anggaran belanja</h3>
+    <p class="sub">
+      <% if (profil && profil.budgetLimit) { %>
+        Batas kamu saat ini <%= formatRupiah(profil.budgetLimit) %>.
+        <% if (sisaBudget !== null && sisaBudget >= 0) { %>
+          Masih tersisa <%= formatRupiah(sisaBudget) %>.
+        <% } %>
+      <% } else { %>
+        Kamu belum menetapkan batas anggaran. Isi nilainya supaya sistem mengingatkan saat belanja berlebih.
+      <% } %>
+    </p>
+
+    <form class="baris-anggaran" action="/profile/budget" method="POST">
+      <div class="kolom tumbuh">
+        <label for="budgetLimit">Batas anggaran dalam rupiah</label>
+        <input type="number" id="budgetLimit" name="budgetLimit" min="0"
+               value="<%= profil && profil.budgetLimit ? profil.budgetLimit : '' %>" placeholder="500000">
+      </div>
+      <button type="submit" class="btn btn-utama">Simpan batas</button>
+    </form>
+  </div>
+</div>
+
+<%- include('./partials/footer') %>

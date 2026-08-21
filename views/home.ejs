@@ -1,0 +1,70 @@
+<%- include('./partials/head', { judul: 'Beranda' }) %>
+
+<section class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">Dari perajin, langsung ke rumah kamu</p>
+    <h1>Barang buatan tangan dari seluruh Nusantara</h1>
+    <p>Batik tulis Pekalongan, tenun ikat Sumba, kopi Gayo, gerabah Kasongan. Dijual langsung oleh perajin dan pelaku usaha kecil, tanpa perantara.</p>
+
+    <div class="hero-aksi">
+      <% if (session.userId) { %>
+        <a class="btn btn-utama" href="/products">Lihat katalog</a>
+      <% } else { %>
+        <a class="btn btn-utama" href="/register">Buat akun</a>
+        <a class="btn btn-garis" href="/login">Masuk</a>
+      <% } %>
+    </div>
+
+    <div class="angka-strip">
+      <div>
+        <span><%= jumlahProduk %></span>
+        <small>Produk terdaftar</small>
+      </div>
+      <div>
+        <span><%= daftarKategori.length %></span>
+        <small>Kategori</small>
+      </div>
+      <div>
+        <span>Rp 15rb</span>
+        <small>Harga termurah</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="judul-bagian">
+    <h2>Telusuri per kategori</h2>
+  </div>
+
+  <div class="pita-kategori">
+    <% daftarKategori.forEach(kategori => { %>
+      <a href="/products?categoryId=<%= kategori.id %>">
+        <%= kategori.name %> (<%= kategori.Products.length %>)
+      </a>
+    <% }) %>
+  </div>
+
+  <div class="judul-bagian">
+    <h2>Serba murah</h2>
+    <a href="/products?sort=termurah">Lihat semua yang termurah</a>
+  </div>
+
+  <div class="grid-produk">
+    <% produkTerjangkau.forEach(produk => { %>
+      <article class="kartu">
+        <% if (produk.imageUrl) { %>
+          <img src="<%= produk.imageUrl %>" alt="<%= produk.name %>">
+        <% } %>
+        <div class="kartu-isi">
+          <span class="tag"><%= produk.Category.name %></span>
+          <h3><a href="/products/<%= produk.id %>"><%= produk.name %></a></h3>
+          <p><%= produk.deskripsiSingkat %></p>
+          <div class="harga"><%= produk.hargaRupiah %></div>
+        </div>
+      </article>
+    <% }) %>
+  </div>
+</div>
+
+<%- include('./partials/footer') %>

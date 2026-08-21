@@ -1,0 +1,6 @@
+<% if (typeof error !== 'undefined' && error) { %>
+  <div class="pesan pesan-salah"><%= error %></div>
+<% } %>
+<% if (typeof notification !== 'undefined' && notification) { %>
+  <div class="pesan pesan-benar"><%= notification %></div>
+<% } %>

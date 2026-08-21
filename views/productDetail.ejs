@@ -1,0 +1,34 @@
+<%- include('./partials/head', { judul: produk.name }) %>
+
+<div class="wrap">
+  <p class="eyebrow"><a href="/products">Kembali ke katalog</a></p>
+
+  <div class="detail">
+    <div>
+      <% if (produk.imageUrl) { %>
+        <img src="<%= produk.imageUrl %>" alt="<%= produk.name %>">
+      <% } %>
+    </div>
+
+    <div>
+      <span class="tag"><%= produk.Category.name %></span>
+      <h1><%= produk.name %></h1>
+      <div class="harga harga-besar"><%= produk.hargaRupiah %></div>
+      <p><%= produk.description %></p>
+
+      <dl>
+        <dt>Kategori</dt>
+        <dd><%= produk.Category.name %></dd>
+      </dl>
+
+      <% if (session.role === 'buyer') { %>
+        <form action="/carts/add" method="POST" style="margin-top: 24px">
+          <input type="hidden" name="ProductId" value="<%= produk.id %>">
+          <button type="submit" class="btn btn-utama">Masukkan keranjang</button>
+        </form>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('./partials/footer') %>

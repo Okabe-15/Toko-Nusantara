@@ -1,0 +1,58 @@
+[
+  {
+    "name": "Batik Tulis Pekalongan",
+    "description": "Kain batik tulis motif jlamprang dengan pewarna alami, panjang dua meter.",
+    "price": 450000,
+    "imageUrl": "https://images.unsplash.com/photo-1600250395178-40fe752e5189?w=600",
+    "CategoryId": 2
+  },
+  {
+    "name": "Kopi Gayo Arabika 250g",
+    "description": "Biji kopi arabika dataran tinggi Gayo, proses honey, aroma cokelat dan jeruk.",
+    "price": 95000,
+    "imageUrl": "https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=600",
+    "CategoryId": 4
+  },
+  {
+    "name": "Anyaman Rotan Serbaguna",
+    "description": "Keranjang rotan asli Kalimantan, dianyam tangan, cocok untuk penyimpanan.",
+    "price": 165000,
+    "imageUrl": "https://images.unsplash.com/photo-1594026112284-02bb6f3352fe?w=600",
+    "CategoryId": 1
+  },
+  {
+    "name": "Keripik Sanjai Balado",
+    "description": "Keripik singkong khas Bukittinggi dengan bumbu balado pedas manis.",
+    "price": 35000,
+    "imageUrl": "https://images.unsplash.com/photo-1613919113640-25732ec5e61f?w=600",
+    "CategoryId": 3
+  },
+  {
+    "name": "Sabun Minyak Kelapa Murni",
+    "description": "Sabun batang berbahan dasar minyak kelapa murni tanpa pewangi sintetis.",
+    "price": 28000,
+    "imageUrl": "https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=600",
+    "CategoryId": 5
+  },
+  {
+    "name": "Tenun Ikat Sumba",
+    "description": "Selendang tenun ikat Sumba motif kuda, ditenun manual selama tiga minggu.",
+    "price": 780000,
+    "imageUrl": "https://images.unsplash.com/photo-1528825871115-3581a5387919?w=600",
+    "CategoryId": 2
+  },
+  {
+    "name": "Gerabah Kasongan Set",
+    "description": "Set vas gerabah Kasongan finishing natural, terdiri dari tiga ukuran.",
+    "price": 210000,
+    "imageUrl": "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600",
+    "CategoryId": 6
+  },
+  {
+    "name": "Teh Melati Slawi 100g",
+    "description": "Teh hijau melati tradisional Slawi, diseduh wangi dengan rasa sepat lembut.",
+    "price": 42000,
+    "imageUrl": "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=600",
+    "CategoryId": 4
+  }
+]
