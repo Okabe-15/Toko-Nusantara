@@ -1,0 +1,57 @@
+<%- include('./partials/head', { judul: produk ? 'Ubah produk' : 'Tambah produk' }) %>
+
+<div class="wrap-sempit">
+  <%- include('./partials/alert', { error: error, notification: null }) %>
+
+  <div class="kotak-form">
+    <p class="eyebrow"><%= produk ? 'Perbarui data' : 'Lapak kamu' %></p>
+    <h1><%= produk ? 'Ubah produk' : 'Tambah produk baru' %></h1>
+    <p class="sub">Isi keterangan selengkap mungkin supaya pembeli tahu apa yang mereka beli.</p>
+
+    <form action="<%= produk ? '/products/' + produk.id + '/edit' : '/products/add' %>" method="POST" enctype="multipart/form-data">
+      <div class="baris-form">
+        <label for="name">Nama produk</label>
+        <input type="text" id="name" name="name" value="<%= produk ? produk.name : '' %>" placeholder="Batik Tulis Pekalongan" required>
+      </div>
+
+      <div class="baris-form">
+        <label for="description">Deskripsi</label>
+        <textarea id="description" name="description" rows="4" placeholder="Bahan, ukuran, cara perawatan" required><%= produk ? produk.description : '' %></textarea>
+      </div>
+
+      <div class="baris-form">
+        <label for="price">Harga dalam rupiah</label>
+        <input type="number" id="price" name="price" value="<%= produk ? produk.price : '' %>" placeholder="450000" required>
+      </div>
+
+      <div class="baris-form">
+        <label for="image">Foto produk</label>
+        <% if (produk && produk.imageUrl) { %>
+          <img class="pratinjau" src="<%= produk.imageUrl %>" alt="Foto <%= produk.name %> saat ini">
+          <p class="petunjuk">Biarkan kosong bila kamu tidak ingin mengganti foto ini.</p>
+        <% } %>
+        <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/webp">
+        <p class="petunjuk">Format JPG, PNG, atau WEBP. Ukuran maksimal 2 MB.</p>
+      </div>
+
+      <div class="baris-form">
+        <label for="CategoryId">Kategori</label>
+        <select id="CategoryId" name="CategoryId" required>
+          <option value="">Pilih kategori</option>
+          <% daftarKategori.forEach(kategori => { %>
+            <option value="<%= kategori.id %>" <%= produk && produk.CategoryId === kategori.id ? 'selected' : '' %>>
+              <%= kategori.name %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="form-kaki">
+        <button type="submit" class="btn btn-utama"><%= produk ? 'Simpan perubahan' : 'Tambahkan produk' %></button>
+        <a href="/profile">Batal</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('./partials/footer') %>

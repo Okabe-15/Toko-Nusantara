@@ -1,0 +1,61 @@
+<%- include('./partials/head', { judul: 'Profil' }) %>
+
+<div class="wrap">
+  <%- include('./partials/alert', { error: error, notification: notification }) %>
+
+  <div class="judul-bagian">
+    <h2>Halo, <%= pengguna.Profile ? pengguna.Profile.fullName : pengguna.username %></h2>
+    <span><%= pengguna.labelPeran %></span>
+  </div>
+
+  <table style="margin-bottom: 40px">
+    <tbody>
+      <tr><th style="width: 220px">Nama pengguna</th><td><%= pengguna.username %></td></tr>
+      <tr><th>Email</th><td><%= pengguna.email %></td></tr>
+      <% if (pengguna.Profile) { %>
+        <tr><th>Nomor telepon</th><td><%= pengguna.Profile.phoneNumber %></td></tr>
+        <tr><th>Alamat</th><td><%= pengguna.Profile.address %></td></tr>
+      <% } %>
+    </tbody>
+  </table>
+
+  <% if (session.role === 'seller') { %>
+    <div class="judul-bagian">
+      <h2>Kelola katalog</h2>
+      <a class="btn btn-utama btn-kecil" href="/products/add">Tambah produk</a>
+    </div>
+
+    <% if (daftarProduk.length === 0) { %>
+      <div class="kosong">
+        <h3>Katalog masih kosong</h3>
+        <p>Tambahkan produk pertama supaya pembeli bisa menemukannya.</p>
+      </div>
+    <% } else { %>
+      <table>
+        <thead>
+          <tr>
+            <th>Nama produk</th>
+            <th>Kategori</th>
+            <th class="angka">Harga</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% daftarProduk.forEach(produk => { %>
+            <tr>
+              <td><a href="/products/<%= produk.id %>"><%= produk.name %></a></td>
+              <td><%= produk.Category.name %></td>
+              <td class="angka"><%= produk.hargaRupiah %></td>
+              <td class="angka">
+                <a class="btn btn-netral btn-kecil" href="/products/<%= produk.id %>/edit">Ubah</a>
+                <a class="btn btn-bahaya btn-kecil" href="/products/<%= produk.id %>/delete">Hapus</a>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  <% } %>
+</div>
+
+<%- include('./partials/footer') %>
