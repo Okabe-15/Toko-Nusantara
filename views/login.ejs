@@ -1,0 +1,31 @@
+<%- include('./partials/head', { judul: 'Masuk' }) %>
+
+<div class="wrap-sempit">
+  <%- include('./partials/alert', { error: error, notification: notification }) %>
+
+  <div class="kotak-form">
+    <p class="eyebrow">Selamat datang kembali</p>
+    <h1>Masuk ke akun kamu</h1>
+    <p class="sub">Gunakan email yang kamu daftarkan sebelumnya.</p>
+
+    <form action="/login" method="POST">
+      <div class="baris-form">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="nama@mail.com" required>
+      </div>
+
+      <div class="baris-form">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+
+      <div class="form-kaki">
+        <button type="submit" class="btn btn-utama">Masuk</button>
+      </div>
+    </form>
+
+    <p class="form-tautan">Belum punya akun? <a href="/register">Daftar sekarang</a></p>
+  </div>
+</div>
+
+<%- include('./partials/footer') %>

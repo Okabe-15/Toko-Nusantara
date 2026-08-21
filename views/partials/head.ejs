@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= judul %> &mdash; Toko Nusantara</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="/">
+        <img src="/assets/logo.png" alt="Toko Nusantara">
+      </a>
+      <nav>
+        <% if (session.userId) { %>
+          <a href="/products">Katalog</a>
+          <% if (session.role === 'buyer') { %>
+            <a href="/carts">Keranjang</a>
+          <% } else { %>
+            <a href="/products/add">Tambah produk</a>
+          <% } %>
+          <a href="/profile">Profil</a>
+          <span class="peran"><%= session.role === 'seller' ? 'Penjual' : 'Pembeli' %></span>
+          <a href="/logout">Keluar</a>
+        <% } else { %>
+          <a href="/login">Masuk</a>
+          <a href="/register">Daftar</a>
+        <% } %>
+      </nav>
+    </div>
+  </header>
+  <div class="motif"></div>

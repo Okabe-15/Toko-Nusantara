@@ -1,0 +1,448 @@
+:root {
+  --nila: #24345c;
+  --nila-tua: #16213c;
+  --soga: #a8622e;
+  --kapur: #f6f2ea;
+  --kertas: #fffdf9;
+  --tinta: #1d1b17;
+  --abu: #6f6a60;
+  --garis: #ddd5c7;
+  --bata: #97372b;
+  --lumut: #4a6b45;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Poppins', system-ui, sans-serif;
+  background: var(--kapur);
+  color: var(--tinta);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+h1, h2, h3 {
+  font-family: 'Poppins', system-ui, sans-serif;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+a { color: var(--nila); }
+
+/* ---------- Motif batik sebagai pembatas ---------- */
+.motif {
+  height: 10px;
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--soga) 0 2px,
+    transparent 2px 9px
+  );
+  opacity: 0.55;
+}
+
+/* ---------- Navigasi ---------- */
+.topbar {
+  background: var(--nila-tua);
+  color: var(--kertas);
+}
+
+.topbar-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.brand {
+  font-family: 'Poppins', system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--kertas);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.brand span { color: var(--soga); }
+
+.topbar nav {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.topbar nav a {
+  color: #cfd6e6;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.topbar nav a:hover { color: var(--kertas); }
+
+.peran {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid #45557f;
+  border-radius: 999px;
+  padding: 3px 11px;
+  color: #cfd6e6;
+}
+
+/* ---------- Tata letak ---------- */
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 40px 24px 72px;
+}
+
+.wrap-sempit {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 48px 24px 72px;
+}
+
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--soga);
+  margin-bottom: 12px;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  background: var(--nila);
+  color: var(--kertas);
+  padding: 76px 24px 84px;
+}
+
+.hero-inner { max-width: 1120px; margin: 0 auto; }
+.hero h1 { font-size: 42px; max-width: 16ch; margin-bottom: 20px; }
+.hero p { max-width: 52ch; color: #d5dbe9; font-size: 18px; }
+.hero .eyebrow { color: #d59a68; }
+
+.hero-aksi { margin-top: 32px; display: flex; gap: 14px; flex-wrap: wrap; }
+
+.angka-strip {
+  display: flex;
+  gap: 48px;
+  margin-top: 52px;
+  padding-top: 28px;
+  border-top: 1px solid #3d4d75;
+}
+
+.angka-strip div span {
+  display: block;
+  font-family: 'Poppins', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 27px;
+}
+
+.angka-strip div small {
+  color: #b9c2d6;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---------- Tombol ---------- */
+.btn {
+  display: inline-block;
+  border: none;
+  border-radius: 3px;
+  padding: 11px 22px;
+  font-family: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.btn-utama { background: var(--soga); color: #fff; }
+.btn-utama:hover { background: #8d5124; }
+
+.btn-garis {
+  background: transparent;
+  border: 1px solid #6b7ba3;
+  color: var(--kertas);
+}
+.btn-garis:hover { border-color: var(--kertas); }
+
+.btn-kecil { padding: 7px 14px; font-size: 14px; }
+.btn-netral { background: var(--nila); color: #fff; }
+.btn-netral:hover { background: var(--nila-tua); }
+.btn-bahaya { background: transparent; color: var(--bata); border: 1px solid var(--bata); }
+.btn-bahaya:hover { background: var(--bata); color: #fff; }
+
+/* ---------- Kartu produk ---------- */
+.grid-produk {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
+  gap: 26px;
+}
+
+.kartu {
+  background: var(--kertas);
+  border: 1px solid var(--garis);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.kartu img {
+  width: 100%;
+  height: 176px;
+  object-fit: cover;
+  display: block;
+  background: var(--garis);
+}
+
+.kartu-isi { padding: 18px 18px 20px; display: flex; flex-direction: column; flex: 1; }
+.kartu h3 { font-size: 17px; margin-bottom: 6px; }
+.kartu h3 a { color: var(--tinta); text-decoration: none; }
+.kartu h3 a:hover { color: var(--nila); }
+.kartu p { font-size: 14px; color: var(--abu); margin-bottom: 14px; }
+
+.harga {
+  font-family: 'Poppins', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--nila);
+  margin-top: auto;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--soga);
+  margin-bottom: 8px;
+}
+
+.kartu-aksi { margin-top: 14px; display: flex; gap: 8px; }
+
+/* ---------- Pencarian ---------- */
+.panel-filter {
+  background: var(--kertas);
+  border: 1px solid var(--garis);
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 32px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.kolom { display: flex; flex-direction: column; gap: 6px; }
+.kolom.tumbuh { flex: 1; min-width: 200px; }
+
+label {
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--abu);
+}
+
+input[type="text"], input[type="email"], input[type="password"],
+input[type="number"], input[type="url"], select, textarea {
+  font-family: inherit;
+  font-size: 15px;
+  padding: 10px 12px;
+  border: 1px solid var(--garis);
+  border-radius: 3px;
+  background: #fff;
+  color: var(--tinta);
+  width: 100%;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--nila);
+  outline-offset: 1px;
+  border-color: var(--nila);
+}
+
+/* ---------- Pesan ---------- */
+.pesan {
+  border-radius: 3px;
+  padding: 13px 16px;
+  margin-bottom: 24px;
+  font-size: 15px;
+  border-left: 3px solid;
+}
+
+.pesan-salah { background: #fbeceb; border-color: var(--bata); color: #6d271e; }
+.pesan-benar { background: #ecf2eb; border-color: var(--lumut); color: #32492e; }
+.pesan-ingat { background: #fdf3e6; border-color: var(--soga); color: #6f4019; }
+
+/* ---------- Formulir ---------- */
+.kotak-form {
+  background: var(--kertas);
+  border: 1px solid var(--garis);
+  border-radius: 4px;
+  padding: 34px;
+}
+
+.kotak-form h1 { font-size: 25px; margin-bottom: 8px; }
+.kotak-form .sub { color: var(--abu); font-size: 15px; margin-bottom: 26px; }
+.baris-form { margin-bottom: 18px; }
+.baris-form label { display: block; margin-bottom: 6px; }
+.form-kaki { margin-top: 26px; display: flex; gap: 12px; align-items: center; }
+.form-tautan { margin-top: 22px; font-size: 15px; color: var(--abu); }
+
+/* ---------- Tabel keranjang ---------- */
+table { width: 100%; border-collapse: collapse; background: var(--kertas); }
+
+th {
+  text-align: left;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--abu);
+  font-weight: 400;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--garis);
+}
+
+td { padding: 16px; border-bottom: 1px solid var(--garis); vertical-align: middle; }
+td.angka { text-align: right; font-variant-numeric: tabular-nums; }
+th.angka { text-align: right; }
+
+.baris-total td {
+  font-family: 'Poppins', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  border-bottom: none;
+  padding-top: 20px;
+}
+
+.kotak-anggaran {
+  background: var(--kertas);
+  border: 1px solid var(--garis);
+  border-radius: 4px;
+  padding: 24px;
+  margin-top: 28px;
+}
+
+.kotak-anggaran h3 { font-size: 18px; margin-bottom: 4px; }
+.kotak-anggaran .sub { color: var(--abu); font-size: 14px; margin-bottom: 16px; }
+.baris-anggaran { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+
+.kosong {
+  background: var(--kertas);
+  border: 1px dashed var(--garis);
+  border-radius: 4px;
+  padding: 56px 24px;
+  text-align: center;
+  color: var(--abu);
+}
+
+.kosong h3 { color: var(--tinta); font-size: 20px; margin-bottom: 8px; }
+
+.judul-bagian {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.judul-bagian h2 { font-size: 24px; }
+
+.pita-kategori { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 34px; }
+
+.pita-kategori a {
+  border: 1px solid var(--garis);
+  background: var(--kertas);
+  border-radius: 999px;
+  padding: 7px 16px;
+  font-size: 14px;
+  text-decoration: none;
+  color: var(--tinta);
+}
+
+.pita-kategori a:hover { border-color: var(--nila); }
+.pita-kategori a.aktif { background: var(--nila); color: #fff; border-color: var(--nila); }
+
+/* ---------- Detail produk ---------- */
+.detail { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: start; }
+.detail img { width: 100%; border-radius: 4px; border: 1px solid var(--garis); }
+.detail h1 { font-size: 30px; margin-bottom: 12px; }
+.detail .harga-besar { font-size: 27px; margin: 18px 0; }
+.detail dl { margin-top: 24px; border-top: 1px solid var(--garis); }
+.detail dt { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--abu); padding-top: 14px; }
+.detail dd { padding-bottom: 12px; }
+
+footer {
+  background: var(--nila-tua);
+  color: #9aa5bf;
+  padding: 30px 24px;
+  font-size: 14px;
+}
+
+footer div { max-width: 1120px; margin: 0 auto; }
+
+@media (max-width: 720px) {
+  .hero h1 { font-size: 30px; }
+  .detail { grid-template-columns: 1fr; }
+  .angka-strip { gap: 28px; }
+  .topbar-inner { flex-wrap: wrap; gap: 14px; }
+}
+
+/* ---------- Unggah foto produk ---------- */
+.pratinjau {
+  display: block;
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border: 1px solid var(--garis);
+  border-radius: 3px;
+  margin-bottom: 10px;
+  background: var(--kapur);
+}
+
+.petunjuk {
+  font-size: 13px;
+  color: var(--abu);
+  margin-top: 6px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+input[type="file"] {
+  font-family: inherit;
+  font-size: 14px;
+  padding: 10px 12px;
+  border: 1px dashed var(--garis);
+  border-radius: 3px;
+  background: #fff;
+  width: 100%;
+  cursor: pointer;
+}
+
+input[type="file"]:hover { border-color: var(--nila); }
+
+input[type="file"]::file-selector-button {
+  font-family: inherit;
+  font-size: 14px;
+  margin-right: 12px;
+  padding: 7px 14px;
+  border: none;
+  border-radius: 3px;
+  background: var(--nila);
+  color: #fff;
+  cursor: pointer;
+}
+
+.brand img {
+  height: 100px;
+  width: auto;
+  display: block;
+}
