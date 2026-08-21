@@ -1,0 +1,77 @@
+<%- include('./partials/head', { judul: 'Katalog' }) %>
+
+<div class="wrap">
+  <%- include('./partials/alert', { error: error, notification: notification }) %>
+
+  <div class="judul-bagian">
+    <h2>Katalog produk</h2>
+    <span><%= daftarProduk.length %> produk ditemukan</span>
+  </div>
+
+  <form class="panel-filter" action="/products" method="GET">
+    <div class="kolom tumbuh">
+      <label for="keyword">Cari produk</label>
+      <input type="text" id="keyword" name="keyword" value="<%= keyword %>" placeholder="batik, kopi, rotan">
+    </div>
+
+    <div class="kolom">
+      <label for="categoryId">Kategori</label>
+      <select id="categoryId" name="categoryId">
+        <option value="">Semua kategori</option>
+        <% daftarKategori.forEach(kategori => { %>
+          <option value="<%= kategori.id %>" <%= String(kategori.id) === String(categoryId) ? 'selected' : '' %>>
+            <%= kategori.name %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="kolom">
+      <label for="sort">Urutkan</label>
+      <select id="sort" name="sort">
+        <option value="terbaru" <%= sort === 'terbaru' ? 'selected' : '' %>>Terbaru</option>
+        <option value="termurah" <%= sort === 'termurah' ? 'selected' : '' %>>Harga termurah</option>
+        <option value="termahal" <%= sort === 'termahal' ? 'selected' : '' %>>Harga termahal</option>
+        <option value="nama" <%= sort === 'nama' ? 'selected' : '' %>>Nama A sampai Z</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-netral">Terapkan</button>
+  </form>
+
+  <% if (daftarProduk.length === 0) { %>
+    <div class="kosong">
+      <h3>Belum ada produk yang cocok</h3>
+      <p>Coba ganti kata kunci atau pilih kategori lain.</p>
+    </div>
+  <% } else { %>
+    <div class="grid-produk">
+      <% daftarProduk.forEach(produk => { %>
+        <article class="kartu">
+          <% if (produk.imageUrl) { %>
+            <img src="<%= produk.imageUrl %>" alt="<%= produk.name %>">
+          <% } %>
+          <div class="kartu-isi">
+            <span class="tag"><%= produk.Category.name %></span>
+            <h3><a href="/products/<%= produk.id %>"><%= produk.name %></a></h3>
+            <p><%= produk.deskripsiSingkat %></p>
+            <div class="harga"><%= produk.hargaRupiah %></div>
+
+            <div class="kartu-aksi">
+              <% if (session.role === 'buyer') { %>
+                <form action="/carts/add" method="POST">
+                  <input type="hidden" name="ProductId" value="<%= produk.id %>">
+                  <button type="submit" class="btn btn-utama btn-kecil">Masukkan keranjang</button>
+                </form>
+              <% } else { %>
+                <a class="btn btn-netral btn-kecil" href="/products/<%= produk.id %>/edit">Ubah</a>
+              <% } %>
+            </div>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+<%- include('./partials/footer') %>

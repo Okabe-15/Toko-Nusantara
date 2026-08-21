@@ -1,0 +1,59 @@
+<%- include('./partials/head', { judul: 'Daftar' }) %>
+
+<div class="wrap-sempit">
+  <%- include('./partials/alert', { error: error, notification: null }) %>
+
+  <div class="kotak-form">
+    <p class="eyebrow">Akun baru</p>
+    <h1>Bergabung dengan Toko Nusantara</h1>
+    <p class="sub">Daftar sebagai pembeli untuk berbelanja, atau sebagai penjual untuk membuka lapak.</p>
+
+    <form action="/register" method="POST">
+      <div class="baris-form">
+        <label for="username">Nama pengguna</label>
+        <input type="text" id="username" name="username" placeholder="ariefrizky" required>
+      </div>
+
+      <div class="baris-form">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="nama@mail.com" required>
+      </div>
+
+      <div class="baris-form">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Minimal 8 karakter" required>
+      </div>
+
+      <div class="baris-form">
+        <label for="role">Daftar sebagai</label>
+        <select id="role" name="role" required>
+          <option value="buyer">Pembeli</option>
+          <option value="seller">Penjual</option>
+        </select>
+      </div>
+
+      <div class="baris-form">
+        <label for="fullName">Nama lengkap</label>
+        <input type="text" id="fullName" name="fullName" placeholder="Arief Rizky" required>
+      </div>
+
+      <div class="baris-form">
+        <label for="phoneNumber">Nomor telepon</label>
+        <input type="text" id="phoneNumber" name="phoneNumber" placeholder="081234567890" required>
+      </div>
+
+      <div class="baris-form">
+        <label for="address">Alamat</label>
+        <input type="text" id="address" name="address" placeholder="Jl. Sudirman 45, Jakarta Pusat" required>
+      </div>
+
+      <div class="form-kaki">
+        <button type="submit" class="btn btn-utama">Buat akun</button>
+      </div>
+    </form>
+
+    <p class="form-tautan">Sudah punya akun? <a href="/login">Masuk di sini</a></p>
+  </div>
+</div>
+
+<%- include('./partials/footer') %>
