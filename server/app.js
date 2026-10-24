@@ -36,9 +36,11 @@ app.use(cors({
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 app.use(session({
+  name: 'toko.sid',
   secret: process.env.SESSION_SECRET || 'toko-nusantara-development-secret',
   resave: false,
   saveUninitialized: false,
+  proxy: true,
   store: isProduction || process.env.DATABASE_URL
   ? new pgSession({
     conString: process.env.DATABASE_URL,
@@ -48,6 +50,7 @@ app.use(session({
   cookie: {
     maxAge: 1000 * 60 * 60,
     httpOnly: true,
+    path: '/',
     sameSite,
     secure: secureCookie
   }

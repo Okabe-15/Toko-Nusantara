@@ -68,7 +68,7 @@ class ApiController {
   static logout(req, res) {
     req.session.destroy(error => {
       if (error) return res.status(500).json({ error: { message: 'Logout gagal' } });
-      res.clearCookie('connect.sid');
+      res.clearCookie('toko.sid', { path: '/' });
       return res.json({ message: 'Logout berhasil' });
     });
   }
