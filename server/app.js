@@ -29,8 +29,8 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: isProduction || process.env.DATABASE_URL
-    ? new pgSession({ conString: process.env.DATABASE_URL })
-    : undefined,
+  ? new pgSession({ conString: process.env.DATABASE_URL })
+  : undefined,
   cookie: {
     maxAge: 1000 * 60 * 60,
     httpOnly: true,
