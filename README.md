@@ -140,3 +140,17 @@ VITE_API_URL=http://<EC2_PUBLIC_IP>:3002
 Untuk domain HTTPS, gunakan `VITE_API_URL=https://api.example.com`, `FRONTEND_URL=https://frontend.example.com`, dan set `SESSION_COOKIE_SECURE=true`.
 
 Local filesystem uploads pada `assets/uploads` hanya cocok untuk development. Backend tetap menyajikan gambar melalui `/assets`; gunakan persistent storage atau object storage jika instance EC2 dapat diganti.
+
+### Vercel frontend dan API subdomain
+
+Jika frontend dideploy dari `client/` ke Vercel, `client/vercel.json` meneruskan `/api/*` dan `/assets/*` ke `api.toko-nusantara.issac.biz.id`. Aktifkan konfigurasi Vercel hanya setelah subdomain API memiliki DNS ke EC2, Nginx aktif, dan `https://api.toko-nusantara.issac.biz.id/api/home` mengembalikan JSON `200`.
+
+Contoh record DNS:
+
+```text
+Type: A
+Name: api
+Value: <EC2_ELASTIC_IP>
+```
+
+Pada EC2, salin `deploy/nginx/api.toko-nusantara.issac.biz.id.conf` ke `/etc/nginx/sites-available/`, buat symlink ke `sites-enabled`, lalu jalankan Certbot untuk sertifikat hostname tersebut. Security Group hanya perlu membuka TCP 80 dan 443; port 3002 sebaiknya hanya menerima koneksi lokal.
