@@ -143,14 +143,14 @@ Local filesystem uploads pada `assets/uploads` hanya cocok untuk development. Ba
 
 ### Vercel frontend dan API subdomain
 
-Jika frontend dideploy dari `client/` ke Vercel, `client/vercel.json` meneruskan `/api/*` dan `/assets/*` ke `api.toko-nusantara.issac.biz.id`. Aktifkan konfigurasi Vercel hanya setelah subdomain API memiliki DNS ke EC2, Nginx aktif, dan `https://api.toko-nusantara.issac.biz.id/api/home` mengembalikan JSON `200`.
+Jika frontend dideploy dari `client/` ke Vercel, `client/vercel.json` meneruskan `/api/*` dan `/assets/*` ke `server-toko-nusantara.issac.biz.id`. Endpoint ini sudah harus memiliki DNS ke EC2, Nginx aktif, dan `https://server-toko-nusantara.issac.biz.id/api/home` mengembalikan JSON `200`.
 
 Contoh record DNS:
 
 ```text
 Type: A
-Name: api
+Name: server-toko-nusantara
 Value: <EC2_ELASTIC_IP>
 ```
 
-Pada EC2, salin `deploy/nginx/api.toko-nusantara.issac.biz.id.conf` ke `/etc/nginx/sites-available/`, buat symlink ke `sites-enabled`, lalu jalankan Certbot untuk sertifikat hostname tersebut. Security Group hanya perlu membuka TCP 80 dan 443; port 3002 sebaiknya hanya menerima koneksi lokal.
+Pada EC2, salin `deploy/nginx/server-toko-nusantara.issac.biz.id.conf` ke `/etc/nginx/sites-available/`, buat symlink ke `sites-enabled`, lalu jalankan Certbot untuk sertifikat hostname tersebut. Security Group hanya perlu membuka TCP 80 dan 443; port 3002 sebaiknya hanya menerima koneksi lokal.
