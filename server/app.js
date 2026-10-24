@@ -15,6 +15,7 @@ const port = process.env.PORT || 3002;
 const isProduction = process.env.NODE_ENV === 'production';
 const secureCookie = process.env.SESSION_COOKIE_SECURE === 'true';
 const sameSite = process.env.SESSION_COOKIE_SAMESITE || (isProduction ? 'lax' : 'lax');
+const sessionCookieDomain = process.env.SESSION_COOKIE_DOMAIN || undefined;
 const clientDist = path.join(__dirname, '..', 'client', 'dist');
 const allowedOrigins = (process.env.FRONTEND_URL || '')
   .split(',')
@@ -52,7 +53,8 @@ app.use(session({
     httpOnly: true,
     path: '/',
     sameSite,
-    secure: secureCookie
+    secure: secureCookie,
+    ...(sessionCookieDomain ? { domain: sessionCookieDomain } : {})
   }
 }));
 
