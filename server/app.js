@@ -15,11 +15,21 @@ const port = process.env.PORT || 3002;
 const isProduction = process.env.NODE_ENV === 'production';
 const secureCookie = process.env.SESSION_COOKIE_SECURE === 'true';
 const clientDist = path.join(__dirname, '..', 'client', 'dist');
+const allowedOrigins = (process.env.FRONTEND_URL || '')
+  .split(',')
+  .map(value => value.trim())
+  .filter(Boolean);
+if (!isProduction) {
+  allowedOrigins.push('http://localhost:5173', 'http://127.0.0.1:5173');
+}
 
 app.set('trust proxy', 1);
 app.use(express.json());
 app.use(cors({
-  origin: process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',').map(value => value.trim()) : true,
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('Origin tidak diizinkan'));
+  },
   credentials: true
 }));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
@@ -29,7 +39,10 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: isProduction || process.env.DATABASE_URL
-  ? new pgSession({ conString: process.env.DATABASE_URL })
+  ? new pgSession({
+    conString: process.env.DATABASE_URL,
+    createTableIfMissing: true
+  })
   : undefined,
   cookie: {
     maxAge: 1000 * 60 * 60,

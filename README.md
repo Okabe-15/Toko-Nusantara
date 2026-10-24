@@ -62,6 +62,29 @@ npm run client:build
 
 Pada production, backend Express menyajikan hasil build React dari `client/dist` pada origin yang sama. Setelah pull kode di server, jalankan `npm install` lalu `npm run build` sebelum menjalankan `npm start`. Dengan mode ini frontend menggunakan `/api` tanpa konfigurasi CORS atau domain API terpisah.
 
+Migration `20250101000008-create-session-table.js` membuat tabel PostgreSQL `"session"` memakai schema resmi `connect-pg-simple`. Jalankan `npm run db:migrate` pada database production sebelum login pertama. User database memerlukan izin `CREATE` pada schema target dan `CREATE` pada database jika schema belum tersedia; migration tidak menghapus tabel atau data aplikasi.
+
+Di EC2, setelah `server/.env` tersedia, jalankan migration production dari folder `server/`:
+
+```sh
+cd /home/ubuntu/Toko-Nusantara/server
+npm run db:migrate:prod
+```
+
+Verifikasi tabel dan index session tanpa menampilkan credential:
+
+```sh
+psql "$DATABASE_URL" -c 'SELECT table_schema, table_name FROM information_schema.tables WHERE table_name = '\''session'\'';'
+psql "$DATABASE_URL" -c '\d "session"'
+```
+
+Setelah migration berhasil, restart proses:
+
+```sh
+pm2 restart toko-nusantara --update-env
+pm2 logs toko-nusantara --lines 100
+```
+
 Validasi model, asosiasi, getter, dan REST API router:
 
 ```sh
