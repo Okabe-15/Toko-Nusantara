@@ -58,6 +58,7 @@ class ApiController {
       req.session.userId = user.id;
       req.session.username = user.username;
       req.session.role = user.role;
+      await new Promise((resolve, reject) => req.session.save(error => error ? reject(error) : resolve()));
       return res.json({ message: 'Login berhasil', data: publicUser(user) });
     } catch (error) {
       return res.status(500).json({ error: { message: 'Login gagal' } });

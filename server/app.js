@@ -14,6 +14,7 @@ const app = express();
 const port = process.env.PORT || 3002;
 const isProduction = process.env.NODE_ENV === 'production';
 const secureCookie = process.env.SESSION_COOKIE_SECURE === 'true';
+const sameSite = process.env.SESSION_COOKIE_SAMESITE || (isProduction ? 'lax' : 'lax');
 const clientDist = path.join(__dirname, '..', 'client', 'dist');
 const allowedOrigins = (process.env.FRONTEND_URL || '')
   .split(',')
@@ -47,7 +48,7 @@ app.use(session({
   cookie: {
     maxAge: 1000 * 60 * 60,
     httpOnly: true,
-    sameSite: 'lax',
+    sameSite,
     secure: secureCookie
   }
 }));

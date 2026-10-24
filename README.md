@@ -99,6 +99,7 @@ npm test
 - `DATABASE_URL`: connection string PostgreSQL/Neon/Supabase untuk production.
 - `FRONTEND_URL`: satu atau beberapa origin frontend, dipisahkan koma, yang diizinkan CORS.
 - `SESSION_COOKIE_SECURE`: `false` untuk HTTP langsung; `true` jika backend diakses melalui HTTPS.
+- `SESSION_COOKIE_SAMESITE`: `lax` untuk akses production melalui rewrite same-site; gunakan `none` bersama `SESSION_COOKIE_SECURE=true` jika frontend lokal memanggil backend HTTPS secara langsung.
 
 `server/config/config.json` tetap digunakan Sequelize CLI. Jalankan migrasi dan seed dengan `npm run db:migrate` dan `npm run db:seed`. Jangan menjalankan `db:reset` terhadap production.
 
