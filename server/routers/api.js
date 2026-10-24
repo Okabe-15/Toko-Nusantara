@@ -11,7 +11,7 @@ const handle = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).c
 router.post('/auth/register', handle(ApiController.register));
 router.post('/auth/login', handle(ApiController.login));
 router.post('/auth/logout', apiLogin, handle(ApiController.logout));
-router.get('/auth/me', handle(ApiController.me));
+router.get('/auth/me', apiLogin, handle(ApiController.me));
 
 router.get('/categories', handle(ApiController.categories));
 router.get('/home', handle(ApiController.home));

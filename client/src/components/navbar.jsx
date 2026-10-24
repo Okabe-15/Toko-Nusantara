@@ -7,8 +7,8 @@ export default function Navbar({ user, setUser }) {
   const [open, setOpen] = useState(false);
   const [keyword, setKeyword] = useState('');
   async function logout() {
-    try { await api('/auth/logout', { method: 'POST' }); setUser(null); navigate('/'); }
-    catch (error) { console.error(error); }
+    try { await api('/auth/logout', { method: 'POST' }); } catch (error) { console.error(error); }
+    localStorage.removeItem('toko.accessToken'); setUser(null); navigate('/');
   }
   function search(event) {
     event.preventDefault();

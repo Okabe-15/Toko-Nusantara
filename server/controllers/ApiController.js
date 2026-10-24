@@ -4,6 +4,7 @@ const { User, Profile, Category, Product, Cart, sequelize } = require('../models
 const { comparePassword } = require('../helpers/passwordHelper');
 const { hitungTotalBelanja } = require('../helpers/formatHelper');
 const { hapusBerkasTerunggah } = require('../middlewares/upload');
+const { createApiToken } = require('../helpers/apiToken');
 
 function validationMessage(error) {
   if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
@@ -54,28 +55,19 @@ class ApiController {
       if (!user || !comparePassword(password || '', user.password)) {
         return res.status(401).json({ error: { message: 'Email atau password yang kamu masukkan salah' } });
       }
-      await new Promise((resolve, reject) => req.session.regenerate(error => error ? reject(error) : resolve()));
-      req.session.userId = user.id;
-      req.session.username = user.username;
-      req.session.role = user.role;
-      await new Promise((resolve, reject) => req.session.save(error => error ? reject(error) : resolve()));
-      return res.json({ message: 'Login berhasil', data: publicUser(user) });
+      return res.json({ message: 'Login berhasil', token: createApiToken(user), data: publicUser(user) });
     } catch (error) {
       return res.status(500).json({ error: { message: 'Login gagal' } });
     }
   }
 
   static logout(req, res) {
-    req.session.destroy(error => {
-      if (error) return res.status(500).json({ error: { message: 'Logout gagal' } });
-      res.clearCookie('toko.sid', { path: '/' });
-      return res.json({ message: 'Logout berhasil' });
-    });
+    return res.json({ message: 'Logout berhasil' });
   }
 
   static async me(req, res) {
-    if (!req.session.userId) return res.status(401).json({ error: { message: 'Belum login' } });
-    const user = await User.findWithProfile(req.session.userId);
+    if (!req.auth?.userId) return res.status(401).json({ error: { message: 'Belum login' } });
+    const user = await User.findWithProfile(req.auth.userId);
     if (!user) return res.status(401).json({ error: { message: 'Sesi tidak valid' } });
     return res.json({ message: 'Pengguna aktif', data: publicUser(user) });
   }
@@ -156,7 +148,7 @@ class ApiController {
   }
 
   static async profile(req, res) {
-    const user = await User.findWithProfile(req.session.userId);
+    const user = await User.findWithProfile(req.auth.userId);
     if (!user) return res.status(404).json({ error: { message: 'Profil tidak ditemukan' } });
     return res.json({ message: 'Profil berhasil diambil', data: publicUser(user) });
   }
@@ -164,7 +156,7 @@ class ApiController {
   static async budget(req, res) {
     try {
       const [count] = await Profile.update({ budgetLimit: req.body.budgetLimit || null }, {
-        where: { UserId: req.session.userId }, individualHooks: true
+        where: { UserId: req.auth.userId }, individualHooks: true
       });
       if (!count) return res.status(404).json({ error: { message: 'Profil tidak ditemukan' } });
       return res.json({ message: 'Batas anggaran berhasil diperbarui' });
@@ -175,8 +167,8 @@ class ApiController {
   }
 
   static async cart(req, res) {
-    const items = await Cart.findByUser(req.session.userId);
-    const profile = await Profile.findOne({ where: { UserId: req.session.userId } });
+    const items = await Cart.findByUser(req.auth.userId);
+    const profile = await Profile.findOne({ where: { UserId: req.auth.userId } });
     const total = hitungTotalBelanja(items);
     return res.json({
       message: 'Keranjang berhasil diambil',
@@ -193,7 +185,7 @@ class ApiController {
     const product = await Product.findByPk(req.body.ProductId);
     if (!product) return res.status(404).json({ error: { message: 'Produk tidak ditemukan' } });
     const [item, created] = await Cart.findOrCreate({
-      where: { UserId: req.session.userId, ProductId: req.body.ProductId },
+      where: { UserId: req.auth.userId, ProductId: req.body.ProductId },
       defaults: { quantity: 1 }
     });
     if (!created) await item.increment('quantity');
@@ -203,7 +195,7 @@ class ApiController {
   static async updateCartItem(req, res) {
     try {
       const [count] = await Cart.update({ quantity: req.body.quantity }, {
-        where: { id: req.params.id, UserId: req.session.userId }, individualHooks: true
+        where: { id: req.params.id, UserId: req.auth.userId }, individualHooks: true
       });
       if (!count) return res.status(404).json({ error: { message: 'Barang tidak ditemukan di keranjang' } });
       return res.json({ message: 'Jumlah barang berhasil diperbarui' });
@@ -214,7 +206,7 @@ class ApiController {
   }
 
   static async deleteCartItem(req, res) {
-    const count = await Cart.destroy({ where: { id: req.params.id, UserId: req.session.userId } });
+    const count = await Cart.destroy({ where: { id: req.params.id, UserId: req.auth.userId } });
     if (!count) return res.status(404).json({ error: { message: 'Barang tidak ditemukan di keranjang' } });
     return res.status(204).send();
   }

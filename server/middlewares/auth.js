@@ -1,5 +1,7 @@
 'use strict';
 
+const { verifyApiToken } = require('../helpers/apiToken');
+
 // Memastikan pengguna sudah login sebelum membuka halaman terbatas
 function wajibLogin(req, res, next) {
   if (!req.session.userId) {
@@ -28,21 +30,29 @@ function wajibPembeli(req, res, next) {
 }
 
 function apiLogin(req, res, next) {
-  if (!req.session.userId) {
+  const authorization = req.get('authorization') || '';
+  const token = authorization.startsWith('Bearer ') ? authorization.slice(7) : '';
+  const identity = verifyApiToken(token);
+  if (!identity) {
     return res.status(401).json({ error: { message: 'Silakan login terlebih dahulu untuk melanjutkan' } });
   }
+  req.auth = {
+    userId: identity.sub,
+    username: identity.username,
+    role: identity.role
+  };
   next();
 }
 
 function apiSeller(req, res, next) {
-  if (req.session.role !== 'seller') {
+  if (req.auth?.role !== 'seller') {
     return res.status(403).json({ error: { message: 'Operasi ini hanya dapat dilakukan oleh penjual' } });
   }
   next();
 }
 
 function apiBuyer(req, res, next) {
-  if (req.session.role !== 'buyer') {
+  if (req.auth?.role !== 'buyer') {
     return res.status(403).json({ error: { message: 'Operasi ini hanya dapat dilakukan oleh pembeli' } });
   }
   next();

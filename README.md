@@ -96,11 +96,14 @@ npm test
 - `NODE_ENV`: `development` atau `production`.
 - `PORT`: port server, default `3002`.
 - `SESSION_SECRET`: secret cookie session; wajib diganti pada production.
+- `API_TOKEN_SECRET`: secret untuk token Bearer API; wajib diganti pada production.
 - `DATABASE_URL`: connection string PostgreSQL/Neon/Supabase untuk production.
 - `FRONTEND_URL`: satu atau beberapa origin frontend, dipisahkan koma, yang diizinkan CORS.
 - `SESSION_COOKIE_SECURE`: `false` untuk HTTP langsung; `true` jika backend diakses melalui HTTPS.
 - `SESSION_COOKIE_SAMESITE`: `lax` untuk akses production melalui rewrite same-site; gunakan `none` bersama `SESSION_COOKIE_SECURE=true` jika frontend lokal memanggil backend HTTPS secara langsung.
 - `SESSION_COOKIE_DOMAIN`: gunakan `.issac.biz.id` bila frontend dan backend memakai subdomain berbeda di bawah domain tersebut; kosongkan untuk development.
+
+Frontend React menggunakan Bearer token pada header `Authorization`, bukan cookie session, untuk endpoint API. Token disimpan di `localStorage` dengan masa berlaku terbatas; jangan menyimpan data sensitif lain di browser. Session cookie lama hanya dipertahankan untuk route EJS legacy.
 
 `server/config/config.json` tetap digunakan Sequelize CLI. Jalankan migrasi dan seed dengan `npm run db:migrate` dan `npm run db:seed`. Jangan menjalankan `db:reset` terhadap production.
 

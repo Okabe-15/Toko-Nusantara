@@ -1,9 +1,13 @@
 import { baseUrl } from './constant/baseUrl';
 
 export async function api(url, options = {}) {
+  const token = localStorage.getItem('toko.accessToken');
+  const headers = new Headers(options.headers);
+  if (token) headers.set('Authorization', `Bearer ${token}`);
   const response = await fetch(`${baseUrl}/api${url}`, {
-    credentials: 'include',
-    ...options
+    credentials: 'omit',
+    ...options,
+    headers
   });
   if (response.status === 204) return null;
   const contentType = response.headers.get('content-type') || '';
@@ -13,7 +17,10 @@ export async function api(url, options = {}) {
   if (!body) {
     throw new Error(`Server mengembalikan response tidak valid (${response.status}) untuk ${url}`);
   }
-  if (!response.ok) throw new Error(body?.error?.message || 'Permintaan gagal');
+  if (!response.ok) {
+    if (response.status === 401) localStorage.removeItem('toko.accessToken');
+    throw new Error(body?.error?.message || 'Permintaan gagal');
+  }
   return body;
 }
 

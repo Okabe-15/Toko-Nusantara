@@ -12,7 +12,10 @@ import SellerProducts from './pages/SellerProducts';
 
 export default function App() {
   const [user, setUser] = useState(undefined);
-  useEffect(() => { api('/auth/me').then(r => setUser(r.data)).catch(() => setUser(null)); }, []);
+  useEffect(() => {
+    if (!localStorage.getItem('toko.accessToken')) return setUser(null);
+    api('/auth/me').then(r => setUser(r.data)).catch(() => setUser(null));
+  }, []);
   if (user === undefined) return <div className="app-loading"><span className="brand-mark">TN</span><p>Menyiapkan ruang belanja...</p></div>;
 
   return <BrowserRouter><Routes><Route element={<BaseLayout user={user} setUser={setUser} />}>
