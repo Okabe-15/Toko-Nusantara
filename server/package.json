@@ -1,0 +1,48 @@
+{
+  "name": "toko-nusantara",
+  "version": "1.0.0",
+  "description": "Marketplace produk lokal Indonesia - Pair Project Phase 1",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "start:prod": "NODE_ENV=production node app.js",
+    "dev": "nodemon app.js",
+    "server:start": "npm start",
+    "server:dev": "npm run dev",
+    "client:dev": "npm --prefix client run dev",
+    "client:build": "npm --prefix client run build",
+    "build": "npm run client:build",
+    "test": "node verify.js",
+    "db:setup": "npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
+    "db:migrate": "npx sequelize-cli db:migrate",
+    "db:seed": "npx sequelize-cli db:seed:all",
+    "db:reset": "npx sequelize-cli db:drop && npm run db:setup"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.22.2",
+    "express-session": "^1.18.0",
+    "connect-pg-simple": "^10.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "multer": "^2.2.0",
+    "pg": "^8.23.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4",
+    "sequelize-cli": "^6.6.5"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "type": "commonjs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Okabe-15/Toko-Nusantara.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Okabe-15/Toko-Nusantara/issues"
+  },
+  "homepage": "https://github.com/Okabe-15/Toko-Nusantara#readme"
+}
