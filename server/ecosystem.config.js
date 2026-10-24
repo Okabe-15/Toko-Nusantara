@@ -16,6 +16,7 @@ module.exports = {
         NODE_ENV: 'production',
         PORT: process.env.PORT || 3002,
         SESSION_SECRET: process.env.SESSION_SECRET,
+        API_TOKEN_SECRET: process.env.API_TOKEN_SECRET,
         SESSION_COOKIE_SECURE: process.env.SESSION_COOKIE_SECURE || 'true',
         SESSION_COOKIE_SAMESITE: process.env.SESSION_COOKIE_SAMESITE || 'lax',
         SESSION_COOKIE_DOMAIN: process.env.SESSION_COOKIE_DOMAIN,
