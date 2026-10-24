@@ -5,7 +5,14 @@ export async function api(url, options = {}) {
     credentials: 'include',
     ...options
   });
-  const body = response.status === 204 ? null : await response.json();
+  if (response.status === 204) return null;
+  const contentType = response.headers.get('content-type') || '';
+  const body = contentType.includes('application/json')
+    ? await response.json()
+    : null;
+  if (!body) {
+    throw new Error(`Server mengembalikan response tidak valid (${response.status}) untuk ${url}`);
+  }
   if (!response.ok) throw new Error(body?.error?.message || 'Permintaan gagal');
   return body;
 }
