@@ -5,3 +5,16 @@ graphify-out/
 .env
 .env.*
 !.env.example
+
+# Abaikan node_modules di semua folder
+node_modules/
+**/node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Build files
+dist/
+build/
