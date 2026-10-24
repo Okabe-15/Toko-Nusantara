@@ -60,6 +60,8 @@ Build frontend production:
 npm run client:build
 ```
 
+Pada production, backend Express menyajikan hasil build React dari `client/dist` pada origin yang sama. Setelah pull kode di server, jalankan `npm install` lalu `npm run build` sebelum menjalankan `npm start`. Dengan mode ini frontend menggunakan `/api` tanpa konfigurasi CORS atau domain API terpisah.
+
 Validasi model, asosiasi, getter, dan REST API router:
 
 ```sh
