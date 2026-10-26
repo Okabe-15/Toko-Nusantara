@@ -29,10 +29,10 @@ cek('User: hasOne Profile, hasMany Cart, belongsToMany Product', () => {
   if (!a.CartProducts || a.CartProducts.associationType !== 'BelongsToMany') throw new Error('belongsToMany tidak terdaftar');
   if (!a.Carts || a.Carts.associationType !== 'HasMany') throw new Error('hasMany Cart tidak terdaftar');
 });
-cek('Product: belongsTo Category, belongsToMany User, tanpa UserId', () => {
+cek('Product: belongsTo Category, Seller, dan belongsToMany User', () => {
   const a = Product.associations;
   if (!a.Category) throw new Error('belongsTo Category hilang');
-  if (a.User) throw new Error('Products seharusnya tidak lagi punya FK UserId');
+  if (!a.Seller || a.Seller.associationType !== 'BelongsTo') throw new Error('belongsTo Seller hilang');
   if (!a.Buyers || a.Buyers.associationType !== 'BelongsToMany') throw new Error('belongsToMany tidak terdaftar');
 });
 cek('static method tersedia', () => {
@@ -48,7 +48,7 @@ const kategori = Category.build({ id: 2, name: 'Batik & Tenun' });
 const produk = Product.build({
   id: 1, name: 'Batik Tulis Pekalongan',
   description: 'Kain batik tulis motif jlamprang dengan pewarna alami, panjang dua meter.',
-  price: 450000, imageUrl: '/assets/uploads/produk-1.jpg', CategoryId: 2
+  price: 450000, imageUrl: '/assets/uploads/produk-1.jpg', CategoryId: 2, UserId: 1
 });
 produk.Category = kategori;
 
@@ -87,6 +87,11 @@ cek('Profile.isWithinBudget menolak belanja berlebih', () => {
 });
 cek('Profile.sisaBudget', () => {
   if (profil.sisaBudget(400000) !== 100000) throw new Error('hasil: ' + profil.sisaBudget(400000));
+});
+cek('Profile budget nol tetap menjadi batas anggaran', () => {
+  const tanpaAnggaran = Profile.build({ budgetLimit: 0 });
+  if (tanpaAnggaran.isWithinBudget(1) !== false) throw new Error('budget nol dianggap tanpa batas');
+  if (tanpaAnggaran.sisaBudget(1) !== -1) throw new Error('sisa budget nol salah');
 });
 
 console.log('\n== Validasi ==');

@@ -5,7 +5,7 @@ import { api, money } from '../api';
 export default function SellerProducts({ user }) {
   const empty = { name: '', description: '', price: '', CategoryId: '', image: null };
   const [products, setProducts] = useState([]); const [categories, setCategories] = useState([]); const [form, setForm] = useState(empty); const [editing, setEditing] = useState(null); const [error, setError] = useState(''); const [message, setMessage] = useState(''); const [busy, setBusy] = useState(false);
-  const load = () => Promise.all([api('/products'), api('/categories')]).then(([p, c]) => { setProducts(p.data); setCategories(c.data); }).catch(e => setError(e.message));
+  const load = () => Promise.all([api('/seller/products'), api('/categories')]).then(([p, c]) => { setProducts(p.data); setCategories(c.data); }).catch(e => setError(e.message));
   useEffect(() => { load(); }, []);
   function change(e) { setForm({ ...form, [e.target.name]: e.target.name === 'image' ? e.target.files[0] : e.target.value }); }
   function edit(product) { setEditing(product.id); setForm({ name: product.name, description: product.description, price: product.price, CategoryId: product.CategoryId, image: null }); }

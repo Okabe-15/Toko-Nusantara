@@ -90,7 +90,7 @@ class UserController {
 
       //>>> Penjual melihat seluruh katalog
       const daftarProduk = req.session.role === 'seller'
-        ? await Product.findAll({ include: [{ model: Category }], order: [['createdAt', 'DESC']] })
+        ? await Product.findAll({ where: { UserId: req.session.userId }, include: [{ model: Category }], order: [['createdAt', 'DESC']] })
         : [];
 
       res.render('profile', {

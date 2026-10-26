@@ -1,7 +1,7 @@
 'use strict';
 
 const { Product, Category } = require('../models');
-const { hapusBerkasTerunggah } = require('../middlewares/upload');
+const { hapusBerkasTerunggah, hapusGambarLokal } = require('../middlewares/upload');
 
 class ProductController {
   //>>> Halaman utama produk dengan pencarian, filter kategori, dan pengurutan
@@ -70,7 +70,8 @@ class ProductController {
         description,
         price,
         imageUrl: req.file ? `/assets/uploads/${req.file.filename}` : null,
-        CategoryId
+        CategoryId,
+        UserId: req.session.userId
       });
 
       const pesan = `Produk ${name} berhasil ditambahkan ke katalog`;
@@ -91,7 +92,7 @@ class ProductController {
       const { id } = req.params;
       const { error } = req.query;
 
-      const produk = await Product.findByPk(id);
+      const produk = await Product.findOne({ where: { id, UserId: req.session.userId } });
       const daftarKategori = await Category.findAll({ order: [['name', 'ASC']] });
 
       if (!produk) {
@@ -110,7 +111,7 @@ class ProductController {
       const { id } = req.params;
       const { name, description, price, CategoryId } = req.body;
 
-      const produkLama = await Product.findByPk(id);
+      const produkLama = await Product.findOne({ where: { id, UserId: req.session.userId } });
       if (!produkLama) {
         hapusBerkasTerunggah(req.file);
         const pesan = 'Produk yang kamu ubah tidak ditemukan';
@@ -124,8 +125,9 @@ class ProductController {
 
       await Product.update(
         { name, description, price, imageUrl: alamatGambar, CategoryId },
-        { where: { id }, individualHooks: true }
+        { where: { id, UserId: req.session.userId }, individualHooks: true }
       );
+      if (req.file) hapusGambarLokal(produkLama.imageUrl);
 
       const pesan = `Produk ${name} berhasil diperbarui`;
       res.redirect(`/profile?notification=${encodeURIComponent(pesan)}`);
@@ -145,13 +147,15 @@ class ProductController {
     const { id } = req.params;
     let namaProduk = '';
 
-    Product.findByPk(id)
+    Product.findOne({ where: { id, UserId: req.session.userId } })
       .then(produk => {
         if (!produk) {
           throw new Error('Produk yang kamu hapus tidak ditemukan');
         }
         namaProduk = produk.name;
-        return Product.destroy({ where: { id } });
+        return Product.destroy({ where: { id, UserId: req.session.userId } }).then(() => {
+          hapusGambarLokal(produk.imageUrl);
+        });
       })
       .then(() => {
         const pesan = `Produk ${namaProduk} berhasil dihapus dari katalog`;

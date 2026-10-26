@@ -11,6 +11,7 @@ module.exports = {
         price: produk.price,
         imageUrl: produk.imageUrl,
         CategoryId: produk.CategoryId,
+        UserId: produk.UserId || 1,
         createdAt: new Date(),
         updatedAt: new Date()
       };

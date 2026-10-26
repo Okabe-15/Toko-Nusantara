@@ -3,7 +3,7 @@
 const { User, Profile, Category, Product, Cart, sequelize } = require('../models');
 const { comparePassword } = require('../helpers/passwordHelper');
 const { hitungTotalBelanja } = require('../helpers/formatHelper');
-const { hapusBerkasTerunggah } = require('../middlewares/upload');
+const { hapusBerkasTerunggah, hapusGambarLokal } = require('../middlewares/upload');
 const { createApiToken } = require('../helpers/apiToken');
 
 function validationMessage(error) {
@@ -26,6 +26,7 @@ function publicUser(user) {
 
 function publicProduct(product, req) {
   const value = product.toJSON();
+  delete value.UserId;
   if (value.imageUrl && value.imageUrl.startsWith('/')) {
     value.imageUrl = `${req.protocol}://${req.get('host')}${value.imageUrl}`;
   }
@@ -61,7 +62,8 @@ class ApiController {
     }
   }
 
-  static logout(req, res) {
+  static async logout(req, res) {
+    await User.increment('apiTokenVersion', { by: 1, where: { id: req.auth.userId } });
     return res.json({ message: 'Logout berhasil' });
   }
 
@@ -100,6 +102,15 @@ class ApiController {
     return res.json({ message: 'Produk berhasil diambil', data: data.map(product => publicProduct(product, req)) });
   }
 
+  static async sellerProducts(req, res) {
+    const data = await Product.findAll({
+      where: { UserId: req.auth.userId },
+      include: [{ model: Category }],
+      order: [['createdAt', 'DESC']]
+    });
+    return res.json({ message: 'Produk penjual berhasil diambil', data: data.map(product => publicProduct(product, req)) });
+  }
+
   static async product(req, res) {
     const data = await Product.findByPk(req.params.id, { include: [{ model: Category }] });
     if (!data) return res.status(404).json({ error: { message: 'Produk tidak ditemukan' } });
@@ -110,7 +121,7 @@ class ApiController {
     try {
       const { name, description, price, CategoryId } = req.body;
       const data = await Product.create({
-        name, description, price, CategoryId,
+        name, description, price, CategoryId, UserId: req.auth.userId,
         imageUrl: req.file ? `/assets/uploads/${req.file.filename}` : null
       });
       return res.status(201).json({ message: 'Produk berhasil ditambahkan', data });
@@ -128,11 +139,17 @@ class ApiController {
         hapusBerkasTerunggah(req.file);
         return res.status(404).json({ error: { message: 'Produk tidak ditemukan' } });
       }
+      if (product.UserId !== req.auth.userId) {
+        hapusBerkasTerunggah(req.file);
+        return res.status(403).json({ error: { message: 'Anda tidak berhak mengubah produk ini' } });
+      }
       const { name, description, price, CategoryId } = req.body;
+      const gambarLama = product.imageUrl;
       await product.update({
         name, description, price, CategoryId,
         imageUrl: req.file ? `/assets/uploads/${req.file.filename}` : product.imageUrl
       }, { individualHooks: true });
+      if (req.file) hapusGambarLokal(gambarLama);
       return res.json({ message: 'Produk berhasil diperbarui', data: product });
     } catch (error) {
       hapusBerkasTerunggah(req.file);
@@ -142,8 +159,13 @@ class ApiController {
   }
 
   static async deleteProduct(req, res) {
-    const deleted = await Product.destroy({ where: { id: req.params.id } });
-    if (!deleted) return res.status(404).json({ error: { message: 'Produk tidak ditemukan' } });
+    const product = await Product.findByPk(req.params.id);
+    if (!product) return res.status(404).json({ error: { message: 'Produk tidak ditemukan' } });
+    if (product.UserId !== req.auth.userId) {
+      return res.status(403).json({ error: { message: 'Anda tidak berhak menghapus produk ini' } });
+    }
+    await product.destroy();
+    hapusGambarLokal(product.imageUrl);
     return res.status(204).send();
   }
 
@@ -155,7 +177,10 @@ class ApiController {
 
   static async budget(req, res) {
     try {
-      const [count] = await Profile.update({ budgetLimit: req.body.budgetLimit || null }, {
+      const budgetLimit = req.body.budgetLimit === '' || req.body.budgetLimit === null || req.body.budgetLimit === undefined
+        ? null
+        : req.body.budgetLimit;
+      const [count] = await Profile.update({ budgetLimit }, {
         where: { UserId: req.auth.userId }, individualHooks: true
       });
       if (!count) return res.status(404).json({ error: { message: 'Profil tidak ditemukan' } });

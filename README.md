@@ -5,7 +5,7 @@ Marketplace produk lokal dengan backend Express REST API dan frontend React/Vite
 ## Fitur dan arsitektur
 
 - `GET /api/home`, `/api/products`, dan `/api/categories` tersedia publik. Endpoint home menyediakan statistik, kategori beserta jumlah produk, dan pilihan produk terjangkau.
-- Auth berbasis session: register, login, logout, dan `GET /api/auth/me`.
+- Auth API memakai Bearer token: register, login, logout, dan `GET /api/auth/me`.
 - Role `buyer` dan `seller` divalidasi di backend.
 - Seller dapat mengelola produk dan upload gambar (JPG/PNG/WEBP, maksimal 2 MB).
 - Buyer dapat mengelola cart, subtotal, total, dan status budget.
@@ -64,6 +64,8 @@ Pada production, backend Express menyajikan hasil build React dari `client/dist`
 
 Migration `20250101000008-create-session-table.js` membuat tabel PostgreSQL `"session"` memakai schema resmi `connect-pg-simple`. Jalankan `npm run db:migrate` pada database production sebelum login pertama. User database memerlukan izin `CREATE` pada schema target dan `CREATE` pada database jika schema belum tersedia; migration tidak menghapus tabel atau data aplikasi.
 
+Migration `20250101000009-add-owner-to-products.js` menambahkan pemilik produk. Produk lama yang masih memiliki `UserId` kosong harus dipetakan ke seller yang benar sebelum dapat diedit; produk tanpa pemilik diperlakukan sebagai katalog baca-saja.
+
 Di EC2, setelah `server/.env` tersedia, jalankan migration production dari folder `server/`:
 
 ```sh
@@ -114,11 +116,12 @@ Frontend React menggunakan Bearer token pada header `Authorization`, bukan cooki
 | POST | `/api/auth/register` | Publik |
 | POST | `/api/auth/login` | Publik |
 | POST | `/api/auth/logout` | Login |
-| GET | `/api/auth/me` | Publik/session |
+| GET | `/api/auth/me` | Login |
 | GET | `/api/categories` | Publik |
 | GET | `/api/home` | Publik, data homepage dan statistik katalog |
 | GET | `/api/products`, `/api/products/:id` | Publik |
-| POST/PATCH/DELETE | `/api/products...` | Seller |
+| GET | `/api/seller/products` | Seller pemilik |
+| POST/PATCH/DELETE | `/api/products...` | Seller pemilik |
 | GET/PATCH | `/api/profile...` | Login |
 | GET/POST/PATCH/DELETE | `/api/cart...` | Buyer |
 
@@ -132,8 +135,9 @@ Deploy backend dan frontend sebagai dua service berbeda:
 
 ```sh
 npm ci --prefix server
-npm --prefix server run db:migrate
-pm2 start ecosystem.config.cjs
+cd server
+npm run db:migrate:prod
+pm2 start ecosystem.config.js --env production
 pm2 save
 ```
 
@@ -143,12 +147,13 @@ Set environment backend di `server/.env`:
 NODE_ENV=production
 PORT=3002
 SESSION_SECRET=<random-secret>
-SESSION_COOKIE_SECURE=false
+API_TOKEN_SECRET=<different-random-secret>
+SESSION_COOKIE_SECURE=true
 FRONTEND_URL=https://frontend.example.com
 DATABASE_URL=postgres://<user>:<password>@<host>:5432/<database>?sslmode=require
 ```
 
-Buka TCP `3002` pada Security Group EC2 dan gunakan URL backend, misalnya `http://<EC2_PUBLIC_IP>:3002`.
+Jangan buka TCP `3002` ke publik bila Nginx menjadi reverse proxy; izinkan hanya trafik lokal dari Nginx.
 
 ### Frontend React
 
@@ -159,10 +164,10 @@ npm ci --prefix client
 npm run client:build
 ```
 
-Deploy isi `client/dist` ke static hosting pilihan Anda. Set variable build:
+Deploy isi `client/dist` ke static hosting pilihan Anda. Untuk hosting frontend terpisah, set variable build:
 
 ```env
-VITE_API_URL=http://<EC2_PUBLIC_IP>:3002
+VITE_API_URL=https://api.example.com
 ```
 
 Untuk domain HTTPS, gunakan `VITE_API_URL=https://api.example.com`, `FRONTEND_URL=https://frontend.example.com`, dan set `SESSION_COOKIE_SECURE=true`.

@@ -75,6 +75,11 @@ module.exports = (sequelize, DataTypes) => {
           msg: 'Peran hanya boleh buyer atau seller'
         }
       }
+    },
+    apiTokenVersion: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     }
   }, {
     sequelize,

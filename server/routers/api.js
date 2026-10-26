@@ -17,6 +17,7 @@ router.get('/categories', handle(ApiController.categories));
 router.get('/home', handle(ApiController.home));
 router.get('/products', handle(ApiController.products));
 router.get('/products/:id', handle(ApiController.product));
+router.get('/seller/products', apiLogin, apiSeller, handle(ApiController.sellerProducts));
 router.post('/products', apiLogin, apiSeller, unggahGambarProdukApi, handle(ApiController.createProduct));
 router.patch('/products/:id', apiLogin, apiSeller, unggahGambarProdukApi, handle(ApiController.updateProduct));
 router.delete('/products/:id', apiLogin, apiSeller, handle(ApiController.deleteProduct));

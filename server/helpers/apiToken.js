@@ -21,6 +21,7 @@ function createApiToken(user) {
     sub: user.id,
     role: user.role,
     username: user.username,
+    ver: user.apiTokenVersion || 0,
     exp: Math.floor(Date.now() / 1000) + tokenLifetimeSeconds
   });
   return `${payload}.${sign(payload)}`;
@@ -40,7 +41,7 @@ function verifyApiToken(token) {
   try {
     const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
     if (!data.sub || !data.role || data.exp <= Math.floor(Date.now() / 1000)) return null;
-    return data;
+    return { ...data, ver: Number.isInteger(data.ver) ? data.ver : 0 };
   } catch {
     return null;
   }

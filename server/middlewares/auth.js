@@ -1,6 +1,7 @@
 'use strict';
 
 const { verifyApiToken } = require('../helpers/apiToken');
+const { User } = require('../models');
 
 // Memastikan pengguna sudah login sebelum membuka halaman terbatas
 function wajibLogin(req, res, next) {
@@ -29,19 +30,27 @@ function wajibPembeli(req, res, next) {
   next();
 }
 
-function apiLogin(req, res, next) {
-  const authorization = req.get('authorization') || '';
-  const token = authorization.startsWith('Bearer ') ? authorization.slice(7) : '';
-  const identity = verifyApiToken(token);
-  if (!identity) {
-    return res.status(401).json({ error: { message: 'Silakan login terlebih dahulu untuk melanjutkan' } });
+async function apiLogin(req, res, next) {
+  try {
+    const authorization = req.get('authorization') || '';
+    const token = authorization.startsWith('Bearer ') ? authorization.slice(7) : '';
+    const identity = verifyApiToken(token);
+    if (!identity) {
+      return res.status(401).json({ error: { message: 'Silakan login terlebih dahulu untuk melanjutkan' } });
+    }
+
+    const user = await User.findByPk(identity.sub, {
+      attributes: ['id', 'username', 'role', 'apiTokenVersion']
+    });
+    if (!user || user.apiTokenVersion !== identity.ver || user.role !== identity.role) {
+      return res.status(401).json({ error: { message: 'Sesi login sudah tidak berlaku' } });
+    }
+
+    req.auth = { userId: user.id, username: user.username, role: user.role };
+    return next();
+  } catch (error) {
+    return next(error);
   }
-  req.auth = {
-    userId: identity.sub,
-    username: identity.username,
-    role: identity.role
-  };
-  next();
 }
 
 function apiSeller(req, res, next) {

@@ -10,13 +10,13 @@ module.exports = (sequelize, DataTypes) => {
 
     //>>> cek belanjaan muat
     isWithinBudget(totalBelanja) {
-      if (!this.budgetLimit) return true;
+      if (this.budgetLimit === null || this.budgetLimit === undefined) return true;
       return totalBelanja <= this.budgetLimit;
     }
 
     //>>> sisa anggaran yang masih tersedia
     sisaBudget(totalBelanja) {
-      if (!this.budgetLimit) return null;
+      if (this.budgetLimit === null || this.budgetLimit === undefined) return null;
       return this.budgetLimit - totalBelanja;
     }
   }

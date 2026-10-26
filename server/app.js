@@ -13,6 +13,9 @@ const apiRouter = require('./routers/api');
 const app = express();
 const port = process.env.PORT || 3002;
 const isProduction = process.env.NODE_ENV === 'production';
+if (isProduction && (!process.env.SESSION_SECRET || !process.env.API_TOKEN_SECRET)) {
+  throw new Error('SESSION_SECRET dan API_TOKEN_SECRET wajib diatur pada production');
+}
 const secureCookie = process.env.SESSION_COOKIE_SECURE === 'true';
 const sameSite = process.env.SESSION_COOKIE_SAMESITE || (isProduction ? 'lax' : 'lax');
 const sessionCookieDomain = process.env.SESSION_COOKIE_DOMAIN || undefined;
@@ -26,6 +29,7 @@ if (!isProduction) {
 }
 
 app.set('trust proxy', 1);
+app.disable('x-powered-by');
 app.use(express.json());
 app.use(cors({
   origin: (origin, callback) => {
@@ -34,6 +38,18 @@ app.use(cors({
   },
   credentials: true
 }));
+app.use((error, req, res, next) => {
+  if (error.message === 'Origin tidak diizinkan') {
+    return res.status(403).json({ error: { message: 'Origin tidak diizinkan' } });
+  }
+  return next(error);
+});
+if (isProduction) {
+  app.use((req, res, next) => {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    next();
+  });
+}
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 app.use(session({

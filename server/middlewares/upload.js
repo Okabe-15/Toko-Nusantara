@@ -72,4 +72,19 @@ function hapusBerkasTerunggah(berkas) {
   }
 }
 
-module.exports = { unggahGambarProduk, unggahGambarProdukApi, hapusBerkasTerunggah };
+function hapusGambarLokal(imageUrl) {
+  const prefix = '/assets/uploads/';
+  if (!imageUrl || !imageUrl.startsWith(prefix)) return;
+
+  const namaBerkas = path.basename(imageUrl.slice(prefix.length));
+  const lokasiBerkas = path.join(folderTujuan, namaBerkas);
+  if (path.dirname(lokasiBerkas) !== path.resolve(folderTujuan)) return;
+  if (fs.existsSync(lokasiBerkas)) fs.unlinkSync(lokasiBerkas);
+}
+
+module.exports = {
+  unggahGambarProduk,
+  unggahGambarProdukApi,
+  hapusBerkasTerunggah,
+  hapusGambarLokal
+};

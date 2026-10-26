@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
   class Product extends Model {
     static associate(models) {
       Product.belongsTo(models.Category, { foreignKey: 'CategoryId' });
+      Product.belongsTo(models.User, { foreignKey: 'UserId', as: 'Seller' });
       Product.hasMany(models.Cart, { foreignKey: 'ProductId' });
       Product.belongsToMany(models.User, {
         through: models.Cart,
@@ -114,6 +115,10 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notNull: { msg: 'Kategori produk wajib dipilih' }
       }
+    },
+    UserId: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     sequelize,

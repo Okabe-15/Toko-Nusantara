@@ -35,6 +35,11 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   Cart.init({
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
+    },
     UserId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -64,7 +69,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Cart'
+    modelName: 'Cart',
+    indexes: [
+      { unique: true, fields: ['UserId', 'ProductId'] }
+    ]
   });
 
   return Cart;
